@@ -25,9 +25,9 @@
 
 ## 完成状态
 
-骨架搭建、`claude plugin validate` 结构校验、`--plugin-dir` 本地加载与 SessionStart 注入验证、端到端巩固闭环验证（教偏好 → Stop 巩固 → 查重落盘 → 新会话注入生效）均已完成，含后续的 node 全平台重构与即插即用改造。Windows 环境为文档依据 + 代码保证，未实测。
+骨架搭建、`claude plugin validate` 结构校验、`--plugin-dir` 本地加载与 SessionStart 注入验证、端到端巩固闭环验证（教偏好 → Stop 巩固 → 查重落盘 → 新会话注入生效）均已完成，含后续的 node 全平台重构与即插即用改造。已推送 GitHub（[eyeix/engram](https://github.com/eyeix/engram)，公开），marketplace 安装路径验证通过：`claude plugin marketplace add eyeix/engram` → `claude plugin install engram@engram` → 新会话自动注入生效。Windows 环境为文档依据 + 代码保证，未实测。
 
-后续方向：推送 GitHub 后验证 marketplace 安装路径；（可选）多机同步数据目录 git remote。
+后续方向：（可选）多机同步数据目录 git remote。
 
 ## 关键约束
 
