@@ -1,0 +1,15 @@
+{
+  "name": "engram",
+  "owner": {
+    "name": "Eyeix"
+  },
+  "description": "engram 插件自托管 marketplace",
+  "plugins": [
+    {
+      "name": "engram",
+      "source": "./",
+      "description": "全局自进化记忆：会话注入有界记忆 + Stop 后台巩固 + Skill 蒸馏",
+      "version": "0.1.0"
+    }
+  ]
+}

@@ -1,0 +1,9 @@
+{
+  "name": "engram",
+  "description": "全局自进化记忆：会话启动注入有界记忆，会话结束后台巩固提炼，经验自动蒸馏为 Skill",
+  "version": "0.1.0",
+  "author": {
+    "name": "Eyeix"
+  },
+  "license": "MIT"
+}
