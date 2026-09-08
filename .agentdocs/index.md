@@ -16,4 +16,4 @@
 - **防递归与去抖是硬约束**：`ENGRAM_CHILD` 环境变量防止子 Claude 的 Stop hook 无限递归；30 分钟去抖 + 30KB transcript 门槛防过度巩固。修改 consolidate.js 时不得移除这两道防线。
 - **hook 逻辑必须用 node 实现**：目标环境 = Claude Code 支持的全部桌面环境。Windows 无 Git Bash 时 hooks 默认走 PowerShell，bash 脚本必挂；hooks.json 用 exec-form（`command: "node"` + `args`）调用，hook 内不得调用 bash/PowerShell 或平台专属命令。
 - **巩固子进程的权限适配**：调用 `claude -p` 巩固时必须带 `--settings '{"env":{"ENABLE_TOOL_SEARCH":"false"}}'`（否则内置编辑工具延迟加载不可见）；权限模式用 acceptEdits，禁用 bypassPermissions；prompt 走 stdin 避免引号转义。
-- **即插即用，模板单一来源**：数据目录初始化（模板/archive/logs/git）由 consolidate.js 的 `ensureDataDir` 在首次巩固时自动完成，勿在其他位置（SKILL.md 等）复制模板造成双源；`/engram:memory-review` 只负责审查整理。
+- **即插即用，模板单一来源**：数据目录初始化（模板/archive/logs/git/.gitignore）由 consolidate.js 的 `ensureDataDir` 在首次巩固时自动完成，勿在其他位置（SKILL.md 等）复制模板造成双源；`.gitignore`（忽略 `.last_run`、`logs/`）须在 git init 前落盘且独立于 git 分支判断存在（存量目录升级时补写），运行时状态文件不得入库；`/engram:memory-review` 只负责审查整理。

@@ -37,6 +37,9 @@ const TEMPLATES = {
 `,
 };
 
+// 运行时状态不入库：去抖时间戳与巩固日志
+const GITIGNORE = '.last_run\nlogs/\n';
+
 // 即插即用：目录结构、记忆模板、git 仓库在首次巩固时自动初始化，无需手动步骤
 function ensureDataDir() {
   fs.mkdirSync(p.join(GM, 'logs'), { recursive: true });
@@ -45,6 +48,9 @@ function ensureDataDir() {
     const file = p.join(GM, name);
     if (!fs.existsSync(file)) fs.writeFileSync(file, TEMPLATES[name]);
   }
+  // .gitignore 在 git init 前落盘，确保首次 add -A 不带入运行时文件；存量目录升级插件后也会在此补上
+  const ignoreFile = p.join(GM, '.gitignore');
+  if (!fs.existsSync(ignoreFile)) fs.writeFileSync(ignoreFile, GITIGNORE);
   if (!fs.existsSync(p.join(GM, '.git'))) {
     // git 不可用或未配置身份时静默跳过，不影响核心巩固功能
     try {
