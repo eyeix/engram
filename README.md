@@ -10,7 +10,7 @@ Claude Code 全局自进化记忆插件。灵感来自 [Hermes Agent](https://gi
 |---|---|---|
 | 规则层 | 维护规则由 SessionStart hook 注入（不侵入用户 CLAUDE.md） | `hooks/inject.js` |
 | 自动化层 | SessionStart 注入 + Stop 后台巩固 | `hooks/hooks.json` |
-| 能力层 | 手动审查/初始化命令 | `skills/memory-review/` |
+| 能力层 | 手动命令（审查记忆 / 同步记忆） | `skills/` |
 | 数据层 | 有界记忆文件，独立 git 管理 | `~/.engram/`（默认） |
 
 数据流：会话开始 → 注入规则与记忆 → 干活 → Stop → Haiku 后台读 transcript 提炼 → 查重/合并/淘汰 → 更新有界文件。
@@ -26,7 +26,16 @@ claude --plugin-dir /path/to/engram
 /plugin install engram@engram
 ```
 
-即插即用：安装后无需任何手动步骤——数据目录（模板、archive/logs、git 仓库）由首次 Stop 巩固自动初始化。`/engram:memory-review` 仅用于手动审查整理已有记忆。
+即插即用：安装后无需任何手动步骤——数据目录（模板、archive/logs、git 仓库）由首次 Stop 巩固自动初始化。
+
+## 命令
+
+| 命令 | 作用 |
+|---|---|
+| `/engram:memory-review` | 手动审查整理全局记忆：逐条评估过时、重复、矛盾，给出保留/合并/改写/淘汰方案，确认后执行，淘汰内容按日归档 |
+| `/engram:sync` | 通过 git 远程仓库同步记忆：检查本地与远程差异，分叉时逐条给出合并建议，确认后推送或拉取 |
+
+其余能力（规则与记忆注入、Stop 后台巩固、数据目录初始化）均自动进行，无需手动命令。
 
 ## 配置
 
@@ -45,7 +54,7 @@ claude --plugin-dir /path/to/engram
 
 ## 多机同步
 
-插件（逻辑）随 git 仓库分发；记忆数据（状态）建议在 `$ENGRAM_MEMORY_DIR` 内设置私有远程仓库，机器间 push/pull 同步。
+插件（逻辑）随 git 仓库分发；记忆数据（状态）在 `$ENGRAM_MEMORY_DIR` 内自带 git 历史，建议设置私有远程仓库，机器间用 `/engram:sync` 同步：命令会检查前置条件（未 git 初始化时给出提示）、拉取本地与远程差异，分叉时逐条给出记忆合并建议（矛盾以日期较新者为准），确认后执行推送或拉取。
 
 ## 验证
 

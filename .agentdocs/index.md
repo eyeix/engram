@@ -8,10 +8,12 @@
 
 ## 已完成任务
 `workflow/done/260908-engram-plugin.md` - 插件骨架搭建与首版验证
+`workflow/done/260908-memory-sync-command.md` - 新增 /engram:sync 记忆同步命令
 
 ## 全局重要记忆
 - **设计哲学**：有界压缩（bounded memory）。硬上限迫使模型在写入时刻取舍，"记下的都值得"，与"只进不出"的数字囤积路线相反。
-- **代码与数据分离**：插件仓库只含逻辑（hooks/skills/manifest）；记忆数据在 `~/.engram/`（可用 `ENGRAM_MEMORY_DIR` 覆盖），自带 git 历史，多机靠私有远程同步。勿放 `~/.claude/` 内——该目录受 Claude Code 内建敏感路径保护，后台巩固进程（acceptEdits）无法写入。
+- **代码与数据分离**：插件仓库只含逻辑（hooks/skills/manifest）；记忆数据在 `~/.engram/`（可用 `ENGRAM_MEMORY_DIR` 覆盖），自带 git 历史，多机同步走 `/engram:sync`。勿放 `~/.claude/` 内——该目录受 Claude Code 内建敏感路径保护，后台巩固进程（acceptEdits）无法写入。
+- **sync 与巩固的 git 语义**：自动巩固子进程只有 Read/Edit/Write/Glob 权限、不产生 git 提交，数据仓库脏工作区属常态，由 `/engram:sync` 的前置检查兜底；sync 为指令式 SKILL，记忆条目语义合并由模型完成，一切覆盖性操作（push/--ff-only/合并写入）先经用户确认。
 - **规则不进 CLAUDE.md**：维护规则由 `hooks/inject.js` 在 SessionStart 时输出注入，装卸插件即装卸规则，不侵入用户配置。
 - **防递归与去抖是硬约束**：`ENGRAM_CHILD` 环境变量防止子 Claude 的 Stop hook 无限递归；30 分钟去抖 + 30KB transcript 门槛防过度巩固。修改 consolidate.js 时不得移除这两道防线。
 - **hook 逻辑必须用 node 实现**：目标环境 = Claude Code 支持的全部桌面环境。Windows 无 Git Bash 时 hooks 默认走 PowerShell，bash 脚本必挂；hooks.json 用 exec-form（`command: "node"` + `args`）调用，hook 内不得调用 bash/PowerShell 或平台专属命令。
