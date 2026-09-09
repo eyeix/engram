@@ -19,4 +19,4 @@
 - **hook 逻辑必须用 node 实现**：目标环境 = Claude Code 支持的全部桌面环境。Windows 无 Git Bash 时 hooks 默认走 PowerShell，bash 脚本必挂；hooks.json 用 exec-form（`command: "node"` + `args`）调用，hook 内不得调用 bash/PowerShell 或平台专属命令。
 - **巩固子进程的权限适配**：调用 `claude -p` 巩固时必须带 `--settings '{"env":{"ENABLE_TOOL_SEARCH":"false"}}'`（否则内置编辑工具延迟加载不可见）；权限模式用 acceptEdits，禁用 bypassPermissions；prompt 走 stdin 避免引号转义。
 - **即插即用，模板单一来源**：数据目录初始化（模板/archive/logs/git/.gitignore）由 consolidate.js 的 `ensureDataDir` 在首次巩固时自动完成，勿在其他位置（SKILL.md 等）复制模板造成双源；`.gitignore`（忽略 `.last_run`、`logs/`）须在 git init 前落盘且独立于 git 分支判断存在（存量目录升级时补写），运行时状态文件不得入库；`/engram:memory-review` 只负责审查整理。
-- **发布流程**：改代码 → bump 版本（`plugin.json` 与 `marketplace.json` 两处须一致）→ push → `claude plugin marketplace update engram` 刷新缓存 → `claude plugin update engram@engram` 升级本机安装（重启会话生效）；`claude plugin install` 对已装插件是幂等的，不会升级。
+- **发布流程**：改代码 → bump 版本（`plugin.json` 与 `marketplace.json` 两处须一致）→ push → 打 `vX.Y.Z` tag 并创建 GitHub Release（`gh release create vX.Y.Z --title ... --notes ...`，notes 用中文写"新增/修复"变更摘要）→ `claude plugin marketplace update engram` 刷新缓存 → `claude plugin update engram@engram` 升级本机安装（重启会话生效）；`claude plugin install` 对已装插件是幂等的，不会升级。
